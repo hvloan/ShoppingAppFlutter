@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "711051349637",
+    "project_id": "e-commerce-flutter-vku",
+    "storage_bucket": "e-commerce-flutter-vku.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711051349637:android:228617b45f1c5996e923ec",
+        "android_client_info": {
+          "package_name": "vn.hvloan.e_commerce_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711051349637-k4ts9rtj3vdktk331g0jrq85aih7t6vn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWewl5iTsSqbqDxTUYigpTyYMw3k_OqfA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711051349637-k4ts9rtj3vdktk331g0jrq85aih7t6vn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
