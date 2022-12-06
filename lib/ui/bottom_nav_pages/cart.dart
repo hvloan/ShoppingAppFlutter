@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/widgets/address_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -124,8 +126,6 @@ class _CartState extends State<Cart> {
                         itemBuilder: (BuildContext context, int index) {
                           DocumentSnapshot _documentSnapshot =
                               snapshot.data!.docs[index];
-                          totalAmount = _documentSnapshot["numbers"] *
-                              _documentSnapshot["price"];
                           return Padding(
                             padding: (index == 0)
                                 ? const EdgeInsets.symmetric(vertical: 10.0)
@@ -488,10 +488,8 @@ class _CartState extends State<Cart> {
                         child: ElevatedButton.icon(
                           icon: const Icon(Icons.price_check_rounded),
                           onPressed: () => {
-                            print("item: $listCartProduct"),
-                            print("receiverName: $receiverName"),
-                            print("receiverPhone: $receiverPhone"),
-                            print("receiverAddress: $receiverAddress"),
+                            orderCartItems(listCartProduct, receiverName,
+                                receiverPhone, receiverAddress, totalAmount),
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.deepOrange,
@@ -519,7 +517,8 @@ class _CartState extends State<Cart> {
     );
   }
 
-  displayInputTextDialog(BuildContext context, String title, String hint) async {
+  displayInputTextDialog(
+      BuildContext context, String title, String hint) async {
     return showDialog(
         context: context,
         builder: (context) {
@@ -589,6 +588,60 @@ class _CartState extends State<Cart> {
       },
     );
   }
+}
+
+orderCartItems(List<ItemListCart> listCartProduct, String receiverName,
+    String receiverPhone, String receiverAddress, int totalAmount) {
+  final oCcy =
+      NumberFormat.currency(locale: 'vi-VN', symbol: 'VND', decimalDigits: 0);
+  final hashMap = <String, String>{};
+  DateTime now = DateTime.now();
+  String formattedDate = DateFormat('kk:mm:ss EEE d MMM').format(now);
+
+  print("size: ${listCartProduct.length}");
+
+  for (var i = 0; i < listCartProduct.length; i++) {
+    hashMap["itemOrder - ${i + 1}"] =
+        "${listCartProduct[i].nameItem} (${listCartProduct[i].numberItem})";
+  }
+  hashMap["receiverName"] = receiverName;
+  hashMap["receiverPhone"] = receiverPhone;
+  hashMap["receiverAddress"] = receiverAddress;
+  hashMap["totalAmount"] = oCcy.format(totalAmount);
+  print(hashMap);
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  var currentUser = _auth.currentUser;
+  CollectionReference _collectionRef =
+      FirebaseFirestore.instance.collection("usersOrderCart");
+  return _collectionRef
+      .doc(currentUser!.email)
+      .collection(formattedDate)
+      .doc()
+      .set(hashMap)
+      .then((value) => {
+            Fluttertoast.showToast(
+              msg: "Order successfully!!",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.TOP,
+              timeInSecForIosWeb: 5,
+              backgroundColor: Colors.redAccent,
+            ),
+            batchDelete("usersCartItems"),
+          });
+}
+
+Future<void> batchDelete(String collectionName) {
+  var collection = FirebaseFirestore.instance.collection(collectionName).doc(FirebaseAuth.instance.currentUser!.email).collection("items");
+  WriteBatch batch = FirebaseFirestore.instance.batch();
+
+  return collection.get().then((querySnapshot) {
+    for (var document in querySnapshot.docs) {
+      batch.delete(document.reference);
+    }
+
+    return batch.commit();
+  });
 }
 
 class ItemListCart {
