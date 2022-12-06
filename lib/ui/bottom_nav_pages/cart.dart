@@ -488,8 +488,18 @@ class _CartState extends State<Cart> {
                         child: ElevatedButton.icon(
                           icon: const Icon(Icons.price_check_rounded),
                           onPressed: () => {
-                            orderCartItems(listCartProduct, receiverName,
-                                receiverPhone, receiverAddress, totalAmount),
+                            if(receiverName == "" || receiverPhone == "" || receiverAddress == "") {
+                              Fluttertoast.showToast(
+                                msg: "Please enter full your information!!",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.TOP,
+                                timeInSecForIosWeb: 5,
+                                backgroundColor: Colors.redAccent,
+                              ),
+                            } else {
+                              orderCartItems(listCartProduct, receiverName,
+                                  receiverPhone, receiverAddress, totalAmount),
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.deepOrange,
@@ -597,8 +607,6 @@ orderCartItems(List<ItemListCart> listCartProduct, String receiverName,
   final hashMap = <String, String>{};
   DateTime now = DateTime.now();
   String formattedDate = DateFormat('kk:mm:ss EEE d MMM').format(now);
-
-  print("size: ${listCartProduct.length}");
 
   for (var i = 0; i < listCartProduct.length; i++) {
     hashMap["itemOrder - ${i + 1}"] =
