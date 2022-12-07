@@ -5,7 +5,7 @@ import 'package:e_commerce_app/ui/bottom_nav_pages/profile.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavController extends StatefulWidget {
-  const BottomNavController({Key? key}) : super(key: key);
+  const BottomNavController( {Key? key}) : super(key: key);
 
   @override
   _BottomNavControllerState createState() => _BottomNavControllerState();
@@ -16,7 +16,7 @@ class _BottomNavControllerState extends State<BottomNavController> {
     const Home(),
     const Favourite(),
     const Cart(),
-    Profile(),
+    const Profile(),
   ];
   var _currentIndex = 0;
 
